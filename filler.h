@@ -29,6 +29,8 @@ typedef struct	s_lst
 	int 		best_x;
 	int 		best_y;
 	int			connect;
+    char        **field;
+    char        **piece;
 }				t_lst;
 
 int		logic(char **field, char **piece, t_lst *run);
