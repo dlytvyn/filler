@@ -56,16 +56,38 @@ int		search_closest_x(int i, int j, t_lst *run)
 
 int		compare_xy(int i, int j, t_lst *run)
 {
-	if (search_closest_x(i, j, run) < search_closest_x(run->best_y, run->best_x, run))
+	int i2;
+	int j2;
+	int dist;
+
+	i2 = 0;
+	while (run->field[i2])
+	{
+		j2 = 0;
+		while (run->field[i2][j2])
+		{
+			dist = search_closest_x(i2, j2, run);
+			if (run->dist == 0)
+			{
+				run->i_en = i2;
+				run->j_en = j2;
+				run->dist = dist;
+			}
+			else if (dist < run->dist)
+			{
+				run->i_en = i2;
+				run->j_en = j2;
+				run->dist = dist;
+			}
+			j2++;
+		}
+		i2++;
+	}
+	if (search_closest_x(run->i_en, run->j_en, run) < search_closest_x(run->best_y, run->best_x, run))
 		return (1);
 	else
 		return (0);
 }
-
-
-
-
-
 
 int 	y_piece(char **piece)
 {
@@ -193,9 +215,11 @@ int     try(t_lst *run, int i, int j)
 		j2 = 0;
 		while (run->field[i][j] && run->piece[i2 + y_piece(run->piece)][j2 + plus])
 		{
+			if (run->piece[i2 + y_piece(run->piece)][j2 + plus] == '*')
+				count++;
 			if (j + 1 == run->columns && run->piece[i2 + y_piece(run->piece)][j2 + plus + 1])
 			{
-				if (run->piece[i2 + y_piece(run->piece)][j2 + plus + 1] == '*')
+				if (count < stars)
 					return (-1);
 			}
 			if (i + 1 == run->rows && run->piece[i2 + y_piece(run->piece) + 1])
@@ -203,10 +227,6 @@ int     try(t_lst *run, int i, int j)
 				if (run->piece[i2 + y_piece(run->piece) + 1][j2 + plus] == '*')
 					return (-1);
 			}
-            if (count == stars && connect == 0)
-                return (-1);
-            if (count == stars && connect == 1)
-                return (1);
 			if (run->piece[i2 + y_piece(run->piece)][j2 + plus] == '*' && (run->field[i][j] == run->me || run->field[i][j] == run->me + 32))
 				connect++;
             if (connect > 1)
@@ -214,7 +234,6 @@ int     try(t_lst *run, int i, int j)
 			if (run->piece[i2 + y_piece(run->piece)][j2 + plus] == '*' && (run->field[i][j] == '.'
                 || run->field[i][j] == run->me || run->field[i][j] == run->me + 32))
 			{
-                count++;
 				j++;
 				j2++;
 			}
@@ -231,6 +250,10 @@ int     try(t_lst *run, int i, int j)
                     && (run->field[i][j] == run->an
                     || run->field[i][j] == run->an + 32))
 				return (-1);
+			if (count == stars && connect == 0)
+				return (-1);
+			if (count == stars && connect == 1)
+				return (1);
 		}
 
 		i++;
@@ -395,6 +418,9 @@ void	ft_filler(t_lst *run)
             run->connect = -1;
             run->p_col = 0;
             run->p_rows = 0;
+	        run->dist = 0;
+	        run->i_en = 0;
+	        run->j_en = 0;
             ft_free(run->piece);
             ft_free(run->field);
         }
@@ -417,6 +443,9 @@ t_lst	*new_list(void)
     run->connect = -1;
     run->field = NULL;
     run->piece = NULL;
+	run->dist = 0;
+	run->i_en = 0;
+	run->j_en = 0;
     return (run);
 }
 

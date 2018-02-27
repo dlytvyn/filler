@@ -31,6 +31,9 @@ typedef struct	s_lst
 	int			connect;
     char        **field;
     char        **piece;
+	int         dist;
+	int         i_en;
+	int         j_en;
 }				t_lst;
 
 int		logic(char **field, char **piece, t_lst *run);
