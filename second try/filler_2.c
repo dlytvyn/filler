@@ -209,8 +209,8 @@ void    solution(t_lst *run)
             {
 	            search_enemy_down(run->field, run, i, j);
 	            search_enemy_up(run->field, run, i, j);
-	            if (module(run->best_y - run->i_en) >= module(i - run->i_en)
-	                && module(run->best_x - run->j_en) > module(j - run->j_en))
+	            if ((run->best_x == 0 && run->best_y == 0) || (module(run->best_y - run->i_en) >= module(i - run->i_en)
+	                && module(run->best_x - run->j_en) > module(j - run->j_en)))
 	            {
 		            run->best_x = j;
 		            run->best_y = i;
