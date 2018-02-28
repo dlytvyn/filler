@@ -15,7 +15,7 @@
 int		module(int a)
 {
 	if (a < 0)
-		a = -1;
+		a = -a;
 	return (a);
 }
 
@@ -142,6 +142,56 @@ int     ft_try_put(int i, int j, t_lst *run)
     return ((run->connect == 1) ? 1 : 0);
 }
 
+void    search_enemy_up(char **field, t_lst *run, int i2, int j2)
+{
+	int i;
+	int j;
+
+	i = i2;
+	while (i >= 0)
+	{
+		j = j2;
+		while (j >= 0)
+		{
+			if (field[i][j] == run->an || field[i][j] == run->an + 32)
+			{
+				if (module(j2 - run->i_en) + module(i2 - run->j_en) >
+						module(i2 - i) + module(j2 - j))
+				{
+					run->i_en = i;
+					run->j_en = j;
+				}
+				return ;
+			}
+			j--;
+		}
+		i--;
+	}
+}
+
+void    search_enemy_down(char **field, t_lst *run, int i2, int j2)
+{
+	int i;
+	int j;
+
+	i = i2;
+	while (field[i])
+	{
+		j = j2;
+		while (field[i][j])
+		{
+			if (field[i][j] == run->an || field[i][j] == run->an + 32)
+			{
+				run->i_en = i;
+				run->j_en = j;
+				return ;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
 void    solution(t_lst *run)
 {
     int i;
@@ -157,8 +207,14 @@ void    solution(t_lst *run)
             run->stars_count = 0;
             if (ft_try_put(i, j, run))
             {
-                run->best_x = j;
-                run->best_y = i;
+	            search_enemy_down(run->field, run, i, j);
+	            search_enemy_up(run->field, run, i, j);
+	            if (module(run->best_y - run->i_en) >= module(i - run->i_en)
+	                && module(run->best_x - run->j_en) > module(j - run->j_en))
+	            {
+		            run->best_x = j;
+		            run->best_y = i;
+	            }
             }
             j++;
         }
@@ -172,8 +228,8 @@ void    solution(t_lst *run)
 
 void    set_initial_data(t_lst *run)
 {
-    run->best_x = -1;
-    run->best_y = -1;
+    run->best_x = 0;
+    run->best_y = 0;
     run->p_col = 0;
     run->p_rows = 0;
 	run->dist = 0;

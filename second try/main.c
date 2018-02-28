@@ -21,8 +21,8 @@ t_lst	*new_list(void)
     run = (t_lst*)malloc(sizeof(t_lst));
     run->an = 0;
     run->me = 0;
-    run->best_x = -1;
-    run->best_y = -1;
+    run->best_x = 0;
+    run->best_y = 0;
     run->columns = 0;
     run->rows = 0;
     run->p_col = 0;
