@@ -28,7 +28,6 @@ typedef struct	s_lst
 	char		an;
 	int 		best_x;
 	int 		best_y;
-	int			connect;
     char        **field;
     char        **piece;
 	int         dist;
@@ -36,7 +35,11 @@ typedef struct	s_lst
 	int         j_en;
 }				t_lst;
 
-int		logic(char **field, char **piece, t_lst *run);
 void	print(char **res);
+char	**get_field(int fd, t_lst *run, char *line);
+char	**get_piece(int fd, t_lst *run);
+void    ft_free(char **array);
+void	ft_filler(t_lst *run);
+int		get_player(int fd);
 
 #endif

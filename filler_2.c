@@ -197,18 +197,14 @@ int     try(t_lst *run, int i, int j)
 	int connect;
     int stars;
     int count;
-	int i_temp;
 	int j_temp;
 
     plus = distance(run->piece);
 	i2 = 0;
     count = 0;
-	i_temp = i;
 	j_temp = j;
 	connect = 0;
     stars = count_stars(run->piece);
-	//print(run->field);
-	//write(1, "\n", 1);
 	while (run->field[i] && run->piece[i2 + y_piece(run->piece)])
 	{
 		j = j_temp;
@@ -266,7 +262,6 @@ void    solution(t_lst *run)
 {
     int i;
     int j;
-	int connect;
 
     i = 0;
     while (run->field[i])
@@ -274,13 +269,12 @@ void    solution(t_lst *run)
         j = 0;
         while (run->field[i][j])
         {
-            if ((connect = try(run, i, j)) == 1 && compare_xy(i, j, run) == 1
+            if (try(run, i, j) == 1 && compare_xy(i, j, run) == 1
                 && module(run->columns - j) < module(run->columns - run->best_x)
                 && module(run->rows - i) < module(run->rows - run->best_y))
             {
 	            run->best_x = j;
 	            run->best_y = i;
-	            run->connect = connect;
             }
             j++;
         }
@@ -292,92 +286,23 @@ void    solution(t_lst *run)
 	write(1, "\n", 1);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-int		get_player(int fd)
+void    set_initial_data(t_lst *run)
 {
-    char	*line;
-    int		res;
-
-    res = 0;
-    line = NULL;
-    get_next_line(fd, &line);
-    if (ft_strstr(line, "dlytvyn.filler") != 0 && ft_strstr(line, "$$$ exec p1") != 0)
-        res = 1;
-    ft_strdel(&line);
-    return (res);
-}
-
-char	**get_field(int fd, t_lst *run)
-{
-    int		i;
-    char	**array;
-    char	*line;
-
-    i = 0;
-    line = NULL;
-    array = (char**)malloc(sizeof(char*) * (run->rows + 1));
-    while (i < run->rows)
-    {
-        get_next_line(fd, &line);
-        array[i] = ft_strnew(run->columns + 1);
-        array[i] = ft_strcpy(array[i], line + 4);
-        array[i][run->columns] = '\0';
-        ft_strdel(&line);
-        i++;
-    }
-    array[i] = NULL;
-    return (array);
-}
-
-char	**get_piece(int fd, t_lst *run)
-{
-    int		i;
-    char	**array;
-    char	*line;
-
-    i = 0;
-    line = NULL;
-    array = (char**)malloc(sizeof(char*) * (run->p_rows + 1));
-    while (i < run->p_rows)
-    {
-        get_next_line(fd, &line);
-        array[i] = ft_strnew(run->p_col + 1);
-        array[i] = ft_strcpy(array[i], line);
-        array[i][run->p_col] = '\0';
-        ft_strdel(&line);
-        i++;
-    }
-    array[i] = NULL;
-    return (array);
-}
-
-void    ft_free(char **array)
-{
-    int i;
-
-    i = 0;
-    while (array[i])
-    {
-        ft_strdel(&array[i]);
-        i++;
-    }
+    run->best_x = -1;
+    run->best_y = -1;
+    run->p_col = 0;
+    run->p_rows = 0;
+	run->dist = 0;
+	run->i_en = 0;
+	run->j_en = 0;
+    ft_free(run->piece);
+    ft_free(run->field);
 }
 
 void	ft_filler(t_lst *run)
 {
     int fd;
     char *line;
-    int   i;
 
     //fd = open("/Users/dlytvyn/Filler/map00", O_RDONLY);
     fd = 0;
@@ -389,71 +314,12 @@ void	ft_filler(t_lst *run)
     {
         if (ft_strstr(line, "Plateau") != 0)
         {
-            i = 0;
-            while (line[i] < '1' || line[i] > '9')
-                i++;
-            run->rows = ft_atoi(line + i);
-            while (line[i] != ' ')
-                i++;
-            i++;
-            run->columns = ft_atoi(line + i);
-            ft_strdel(&line);
-            get_next_line(fd, &line);
-            ft_strdel(&line);
-            run->field = get_field(fd, run);
-            get_next_line(fd, &line);
-            i = 0;
-            while (line[i] < '1' || line[i] > '9')
-                i++;
-            run->p_rows = ft_atoi(line + i);
-            while (line[i] != ' ')
-                i++;
-            i++;
-            run->p_col = ft_atoi(line + i);
-            ft_strdel(&line);
+            run->field = get_field(fd, run, line);
             run->piece = get_piece(fd, run);
             solution(run);
-            run->best_x = -1;
-            run->best_y = -1;
-            run->connect = -1;
-            run->p_col = 0;
-            run->p_rows = 0;
-	        run->dist = 0;
-	        run->i_en = 0;
-	        run->j_en = 0;
-            ft_free(run->piece);
-            ft_free(run->field);
+            set_initial_data(run);
         }
     }
 }
 
-t_lst	*new_list(void)
-{
-    t_lst	*run;
 
-    run = (t_lst*)malloc(sizeof(t_lst));
-    run->an = 0;
-    run->me = 0;
-    run->best_x = -1;
-    run->best_y = -1;
-    run->columns = 0;
-    run->rows = 0;
-    run->p_col = 0;
-    run->p_rows = 0;
-    run->connect = -1;
-    run->field = NULL;
-    run->piece = NULL;
-	run->dist = 0;
-	run->i_en = 0;
-	run->j_en = 0;
-    return (run);
-}
-
-int	main()
-{
-    t_lst *run;
-
-    run = new_list();
-    ft_filler(run);
-    return (1);
-}
