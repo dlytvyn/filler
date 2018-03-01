@@ -100,7 +100,7 @@ int     count_stars(char **piece)
     return (count);
 }
 
-int     ft_try_put(int i, int j, t_lst *run)
+int     ft_try_put(int i, int j, t_link *run)
 {
     int i2;
     int j2;
@@ -142,7 +142,7 @@ int     ft_try_put(int i, int j, t_lst *run)
     return ((run->connect == 1) ? 1 : 0);
 }
 
-void    search_enemy_up(char **field, t_lst *run, int i2, int j2)
+void    search_enemy_up(char **field, t_link *run, int i2, int j2)
 {
 	int i;
 	int j;
@@ -169,7 +169,7 @@ void    search_enemy_up(char **field, t_lst *run, int i2, int j2)
 	}
 }
 
-void    search_enemy_down(char **field, t_lst *run, int i2, int j2)
+void    search_enemy_down(char **field, t_link *run, int i2, int j2)
 {
 	int i;
 	int j;
@@ -192,10 +192,11 @@ void    search_enemy_down(char **field, t_lst *run, int i2, int j2)
 	}
 }
 
-void    solution(t_lst *run)
+void    solution(t_link *run)
 {
     int i;
     int j;
+	int distance;
 
     i = 0;
     while (run->field[i])
@@ -203,17 +204,36 @@ void    solution(t_lst *run)
         j = 0;
         while (run->field[i][j])
         {
+	        distance = 0;
 	        run->connect = 0;
             run->stars_count = 0;
             if (ft_try_put(i, j, run))
             {
 	            search_enemy_down(run->field, run, i, j);
 	            search_enemy_up(run->field, run, i, j);
-	            if ((run->best_x == 0 && run->best_y == 0) || (module(run->best_y - run->i_en) >= module(i - run->i_en)
-	                && module(run->best_x - run->j_en) > module(j - run->j_en)))
+	            distance = module(i - run->i_en) + module(j - run->j_en);
+	            if ((run->best_x == 0 && run->best_y == 0) || distance <= run->dist)
 	            {
-		            run->best_x = j;
-		            run->best_y = i;
+		            if (run->rows >35 && run->columns > 35 && (module(run->rows / 2 - run->best_y) > module(run->rows / 2 - i) || j < run->best_x))
+		            {
+			            run->best_x = j;
+			            run->best_y = i;
+			            run->dist = module(i - run->i_en) + module(j - run->j_en);
+		            }
+		            else if ((run->best_x == 0 && run->best_y == 0) || ((run->rows - i < run->rows/2) && i < run->best_y))
+		            {
+			            run->best_x = j;
+			            run->best_y = i;
+			            run->dist = module(i - run->i_en) + module(j - run->j_en);
+
+		            }
+                    else// if ((run->best_x == 0 && run->best_y == 0) || ((run->rows - i < run->rows/2) && i < run->best_y))
+		            {
+			            run->best_x = j;
+			            run->best_y = i;
+			            run->dist = module(i - run->i_en) + module(j - run->j_en);
+
+		            }
 	            }
             }
             j++;
@@ -226,7 +246,7 @@ void    solution(t_lst *run)
 	write(1, "\n", 1);
 }
 
-void    set_initial_data(t_lst *run)
+void    set_initial_data(t_link *run)
 {
     run->best_x = 0;
     run->best_y = 0;
@@ -242,7 +262,7 @@ void    set_initial_data(t_lst *run)
     ft_free(run->field);
 }
 
-void	ft_filler(t_lst *run)
+void	ft_filler(t_link *run)
 {
     int fd;
     char *line;
@@ -264,5 +284,3 @@ void	ft_filler(t_lst *run)
         }
     }
 }
-
-
