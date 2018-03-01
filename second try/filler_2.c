@@ -220,7 +220,7 @@ void    solution(t_link *run)
 			            run->best_y = i;
 			            run->dist = module(i - run->i_en) + module(j - run->j_en);
 		            }
-		            else if ((run->best_x == 0 && run->best_y == 0) || ((run->rows - i < run->rows/2) && i < run->best_y))
+		            else if ((run->best_x == 0 && run->best_y == 0) || ((run->rows - i < run->rows/2) && i > run->best_y))
 		            {
 			            run->best_x = j;
 			            run->best_y = i;
