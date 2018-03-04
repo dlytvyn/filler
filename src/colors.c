@@ -39,25 +39,39 @@ void	put_color(void)
 		ft_printf("%s\n", line);
 }
 
+void	who_won(int o, int x)
+{
+	ft_printf("\n");
+	if (x > o)
+		ft_printf("{magenta}%s{reset}\n", "Player 2 won!");
+	else if (x < o)
+		ft_printf("{magenta}%s{reset}\n", "Player 1 won!");
+	else if (x == 0)
+		ft_printf("{magenta}%s{reset}\n", "Draw!");
+}
+
 int		main(void)
 {
-	char	*line;
+	char	*ln;
+	int		x;
+	int		o;
 
-	get_next_line(0, &line);
-	ft_strdel(&line);
-	while (get_next_line(0, &line))
+	get_next_line(0, &ln);
+	ft_strdel(&ln);
+	while (get_next_line(0, &ln))
 	{
-		if (ft_strstr(line, "   ") != 0)
+		if (ft_strstr(ln, "   ") != 0)
 			put_color();
 		else
 		{
-			if (ft_strstr(line, "== O") != 0)
-				ft_printf("{green}%s{reset}\n", line);
-			else if (ft_strstr(line, "== X") != 0)
-				ft_printf("{red}%s{reset}\n", line);
+			if (ft_strstr(ln, "== O") != 0)
+				ft_printf("{green}%s{reset}\n", ln) && (o = ft_atoi(ln + 9));
+			else if (ft_strstr(ln, "== X") != 0)
+				ft_printf("{red}%s{reset}\n", ln) && (x = ft_atoi(ln + 9));
 			else
-				printf("%s\n", line);
+				printf("%s\n", ln);
 		}
 	}
+	who_won(o, x);
 	return (1);
 }

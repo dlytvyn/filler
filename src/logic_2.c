@@ -20,9 +20,8 @@ void	set_data(int *i_plus, int *j_plus, int *i2, t_link *run)
 	run->stars = count_stars(run->piece);
 }
 
-int		ft_try_put(int i, int j, t_link *run)
+int		ft_try_put(int i, int j, t_link *run, int i2)
 {
-	int	i2;
 	int	j2;
 	int	j_plus;
 	int	i_plus;

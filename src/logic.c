@@ -61,7 +61,7 @@ void	solution(t_link *run)
 			distance = 0;
 			run->connect = 0;
 			run->stars_count = 0;
-			if (ft_try_put(i, j, run))
+			if (ft_try_put(i, j, run, 0))
 			{
 				search_enemy_down(run->field, run, i, j);
 				search_enemy_up(run->field, run, i, j);

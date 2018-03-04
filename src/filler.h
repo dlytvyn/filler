@@ -59,6 +59,6 @@ int				plus_i(char **piece);
 int				plus_j(char **piece);
 int				st(char *line);
 int				count_stars(char **piece);
-int				ft_try_put(int i, int j, t_link *run);
+int				ft_try_put(int i, int j, t_link *run, int i2);
 
 #endif
